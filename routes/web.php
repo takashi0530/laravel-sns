@@ -1,26 +1,14 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 //Routeファサード
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-
 // localhost/でアクセスするとArticleControllerのindexアクションに飛び、アクションの最後でreturn viewにて、articles.indexに飛ばしている
 
 use App\Http\Controllers\UserController;
 
-Auth::routes(); //この行を追加
+Auth::routes(); //①
 Route::get('/', 'ArticleController@index')->name('articles.index');         //Routeファサードのメソッドに->name()メソッドを繋げるとそのルーティングに名前をつけられる
 Route::resource('/articles', 'ArticleController')->except(['index', 'show'])->middleware('auth');       //②  //erxcept()メソッドを繋げると指定したルーティングを除外できる（③のindexを除外する）   // ④ ->middleware('auth) ：  authミドルウェアはリクエストをコントローラーで処理する前にユーザーがログイン済みであるかどうかをチェックし、ログインしていなければユーザーをログイン画面へリダイレクトする。すでにログイン済みであるならコントローラーの処理が行われる。
 Route::resource('/articles', 'ArticleController')->only(['show']);
@@ -32,10 +20,36 @@ Route::prefix('articles')->name('articles.')->group(function () {
     Route::delete('/{article}/like', 'ArticleController@unlike')->name('unlike')->middleware('auth');
 });
 Route::get('/tags/{name}', 'TagController@show')->name('tags.show');
-
-Route::prefix('users')->name('users.')->group(function() {
-    Route::get('{name}', 'UserController@show')->name('show');
+Route::prefix('users')->name('users.')->group(function () {
+    Route::get('/{name}', 'UserController@show')->name('show');
+    Route::middleware('auth')->group(function () {
+        //フォロー機能のルーティングを追加する
+        Route::put('/{name}/follow', 'UserController@follow')->name('follow');
+        Route::delete('/{name}/follow', 'UserController@unfollow')->name('unfollow');
+    });
 });
+
+
+
+
+//Auth::routes():  ①で登録されるルーティング
+//+--------+----------+------------------------+------------------+------------------------------------------------------------------------+--------------+
+//| Domain | Method   | URI                    | Name             | Action                                                                 | Middleware   |
+//+--------+----------+------------------------+------------------+------------------------------------------------------------------------+--------------+
+//|        | GET|HEAD | login                  | login            | App\Http\Controllers\Auth\LoginController@showLoginForm                | web,guest    |
+//|        | POST     | login                  |                  | App\Http\Controllers\Auth\LoginController@login                        | web,guest    |
+//|        | POST     | logout                 | logout           | App\Http\Controllers\Auth\LoginController@logout                       | web          |
+//|        | GET|HEAD | password/confirm       | password.confirm | App\Http\Controllers\Auth\ConfirmPasswordController@showConfirmForm    | web,auth     |
+//|        | POST     | password/confirm       |                  | App\Http\Controllers\Auth\ConfirmPasswordController@confirm            | web,auth     |
+//|        | POST     | password/email         | password.email   | App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail  | web          |
+//|        | GET|HEAD | password/reset         | password.request | App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm | web          |
+//|        | POST     | password/reset         | password.update  | App\Http\Controllers\Auth\ResetPasswordController@reset                | web          |
+//|        | GET|HEAD | password/reset/{token} | password.reset   | App\Http\Controllers\Auth\ResetPasswordController@showResetForm        | web          |
+//   ■■↓ユーザー登録画面に関連するルーティングが以下二行■■
+//|        | GET|HEAD | register               | register         | App\Http\Controllers\Auth\RegisterController@showRegistrationForm      | web,guest    |
+//|        | POST     | register               |                  | App\Http\Controllers\Auth\RegisterController@register                  | web,guest    |
+//+--------+----------+------------------------+------------------+------------------------------------------------------------------------+--------------+
+
 
 
 /* ②で追加されるルーティング
@@ -79,7 +93,14 @@ Route::prefix('users')->name('users.')->group(function() {
 //  ④で未ログインの場合トップへ飛ばしたくない場合ここから修正できる  /Users/takashi/laravel-sns/laravel/app/Http/Middleware/Authenticate.php
 
 
+HTTPメソッドを指定するルーティング
 
+GET　・・・　（データを取得する基本的なもの）
+POST　・・・　（データの追加に使用）
+PUT　・・・　（データの更新に使用）
+PATCH　・・・　（ほぼPUTと同じですが、ごく一部を更新）
+DELETE　・・・　（データの削除に使用）
+OPTIONS　・・・　（使えるメソッド一覧を表示）
 */
 
 

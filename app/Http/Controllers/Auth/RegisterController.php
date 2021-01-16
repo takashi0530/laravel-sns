@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
-use Illuminate\Foundation\Auth\RegistersUsers;   //RegistersUsersトレイト
+use Illuminate\Foundation\Auth\RegistersUsers;   //RegistersUsersトレイト  ＜トレイトの場所：laravel/vendor/laravel/framework/src/Illuminate/Foundation/Auth/RegistersUsers.php＞  
+//  トレイトのパス：Users/takashi/laravel-sns/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Auth/RegistersUsers.php
+
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,6 +26,7 @@ class RegisterController extends Controller
 
     //RegistersUsersトレイトの中にshowRegistrationFormアクションメソッドとregisterアクションメソッドが定義されている
     // /Users/takashi/laravel-sns/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Auth/RegistersUsers.php のRegistersUsersトレイトを継承している
+    //RegistersUsersトレイトを使用するためにはクラス内で use トレイト名 と記述する必要がある
     use RegistersUsers;
 
     /**

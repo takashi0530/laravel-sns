@@ -4,11 +4,10 @@ namespace App;
 
 use App\Mail\BareMail;
 use App\Notifications\PasswordResetNotification;
-
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -45,11 +44,18 @@ class User extends Authenticatable
         $this->notify(new PasswordResetNotification($token, new BareMail()));       //PasswordResetNotificationクラスのインスタンスを生成してnotify()メソッドに値を渡している
     }
 
-    public function follows(): BelongsToMany {
+    public function followers(): BelongsToMany {
         //中間テーブルとのリレーションが発生するため、第3引数と第4引数を省略できない
         //リレーション元のusersテーブルのidは、中間テーブルのfollowee_idと紐付く
         //リレーション先のusersテーブルのidは、中間テーブルのfollower_idと紐付く
-        return $this->belongsToMany('App\user', 'follows', 'followee_id', 'follower_id')->withTimestamps();
+        return $this->belongsToMany('App\User', 'follows', 'followee_id', 'follower_id')->withTimestamps();
+    }
+
+    //これからフォローするユーザー、もしくはフォロー中のユーザーのモデルにアクセス可能するためのリレーションメソッド
+    public function followings(): BelongsToMany {
+        // リレーション元のusersテーブルのidは、中間テーブルのfollower_idと紐付く
+        //リレーション先のusersテーブルのidは、中間テーブルのfollowee_idと紐付く
+        return $this->belongsToMany('App\User', 'follows', 'follower_id', 'followee_id')->withTimestamps();
     }
 
     public function isFollowedBy(?User $user): bool{
