@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function show(string $name) {
-        //Userも出っるのwhereメソッドに引数を渡す。第2引数で渡したUserの名前と一致するものをuserモデルのnameカラムから、最初に合致する（->fistメソッド）レコードを取得する
+        //Userモデルのwhereメソッドに引数を渡す。第2引数で渡したUserの名前と一致するものをuserモデルのnameカラムから、最初に合致する（->fistメソッド）レコードを取得する
         $user = User::where('name', $name)->first();
 
         //userモデルでリレーションしたarticlesモデルの（ユーザーの投稿記事を降順にする）created_atを降順にソートして変数に代入
@@ -66,4 +66,36 @@ class UserController extends Controller
             'articles' => $articles,
         ]);
     }
+
+    //特定のユーザーがフォローしている一覧ページを表示
+    public function followings(string $name) {
+
+        $user = User::where('name', $name)->first();
+
+        //ユーザーコレクション（ユーザーモデル）のfollowings()メソッドにアクセスし、フォロー中のユーザーモデルをコレクションで取得する
+        $followings = $user->followings->sortByDesc('created_at');
+
+        // resources/views/users/followings.blade.phpを表示
+        return view('users.followings', [
+            'user' => $user,
+            'followings' => $followings,
+        ]);
+    }
+
+    public function followers(string $name) {
+
+        $user = User::where('name', $name)->first();
+
+        $followers = $user->followers->sortByDesc('created_at');
+
+        // resources/views/users/followers.blade.phpを表示
+        return view('users.followers', [
+            'user' => $user,
+            'followers' => $followers,
+        ]);
+    }
+
+
+
+
 }

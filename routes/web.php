@@ -29,6 +29,11 @@ Route::prefix('users')->name('users.')->group(function () {
     //ログイン不要。いいねタブが押されたときに発生する、ユーザーページ表示のルーティング。
     Route::get('/{name}/likes', 'UserController@likes')->name('likes');
 
+    //ユーザーがフォロワーしている一覧ページ
+    Route::get('/{name}/followings', 'UserController@followings')->name('followings');
+    //ユーザーがフォローされている一覧ページ
+    Route::get('/{name}/followers', 'UserController@followers')->name('followers');
+
     //ログインが必要なルーティングはこの中に記述する（※未ログインユーザーは参照負荷）
     Route::middleware('auth')->group(function () {
         //フォロー機能のルーティングを追加する
