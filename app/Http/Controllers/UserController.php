@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers;
 
+//Userモデルの使用を宣言
 use App\User;
+//Requestクラスの使用を宣言
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     public function show(string $name) {
+        //Userも出っるのwhereメソッドに引数を渡す。第2引数で渡したUserの名前と一致するものをuserモデルのnameカラムから、最初に合致する（->fistメソッド）レコードを取得する
         $user = User::where('name', $name)->first();
+
+        //userモデルでリレーションしたarticlesモデルの（ユーザーの投稿記事を降順にする）created_atを降順にソートして変数に代入
+        $articles = $user->articles->sortByDesc('created_at');
+        // dd($articles);
+
+        // users/show のviewを表示する。変数$userをview側でも$userとして使えるように渡す(複数の変数を渡す場合は第2引数以降に記述)
         return view('users.show', [
             'user' => $user,
+            'articles' => $articles,
         ]);
     }
 
@@ -41,5 +51,19 @@ class UserController extends Controller
         $request->user()->followings()->detach($user);
 
         return ['name' => $name];
+    }
+
+    //ユーザー詳細ページ内でいいねタブを押したときの表示内容を取得する
+    public function likes(string $name) {
+
+        $user = User::where('name', $name)->first();
+
+        $articles = $user->likes->sortByDesc('created_at');
+
+        // users/likes.blade.php ビューに飛ばす。
+        return view('users.likes', [
+            'user' => $user,
+            'articles' => $articles,
+        ]);
     }
 }

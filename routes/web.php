@@ -20,13 +20,22 @@ Route::prefix('articles')->name('articles.')->group(function () {
     Route::delete('/{article}/like', 'ArticleController@unlike')->name('unlike')->middleware('auth');
 });
 Route::get('/tags/{name}', 'TagController@show')->name('tags.show');
+
 Route::prefix('users')->name('users.')->group(function () {
+
+    //ログイン不要。ユーザー詳細ページの表示ルーティング
     Route::get('/{name}', 'UserController@show')->name('show');
+
+    //ログイン不要。いいねタブが押されたときに発生する、ユーザーページ表示のルーティング。
+    Route::get('/{name}/likes', 'UserController@likes')->name('likes');
+
+    //ログインが必要なルーティングはこの中に記述する（※未ログインユーザーは参照負荷）
     Route::middleware('auth')->group(function () {
         //フォロー機能のルーティングを追加する
         Route::put('/{name}/follow', 'UserController@follow')->name('follow');
         Route::delete('/{name}/follow', 'UserController@unfollow')->name('unfollow');
     });
+
 });
 
 
