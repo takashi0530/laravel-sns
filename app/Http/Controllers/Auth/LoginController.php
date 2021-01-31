@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 
 
+
 class LoginController extends Controller
 {
     /*
@@ -51,6 +52,9 @@ class LoginController extends Controller
     //Googleログインしたあとのリダイレクト先
     public function handleProviderCallback(Request $request, string $provider) {
 
+
+
+        
         //Googleから取得したユーザー情報
         $providerUser = Socialite::driver($provider)->stateless()->user();
 
@@ -63,5 +67,15 @@ class LoginController extends Controller
             //ログイン後の画面(記事一覧画面に遷移)する
             return $this->sendLoginResponse($request);
         };
+
+        //$userがnullの場合の処理
+        //ユーザー名の登録画面を表示させるアクションメソッドを実行させるルーティング（リダイレクト）
+        return redirect()->route('register.{provider}', [
+            'provider' => $provider,
+            'email' => $providerUser->getEmail(),
+            //Googleから発行されたトークンが返る($providerUser->token)
+            'token' => $providerUser->token,
+        ]);
+
     }
 }

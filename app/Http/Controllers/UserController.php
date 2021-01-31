@@ -11,7 +11,13 @@ class UserController extends Controller
 {
     public function show(string $name) {
         //Userモデルのwhereメソッドに引数を渡す。第2引数で渡したUserの名前と一致するものをuserモデルのnameカラムから、最初に合致する（->fistメソッド）レコードを取得する
-        $user = User::where('name', $name)->first();
+        $user = User::where('name', $name)->first()
+        // 今ユーザーモデルのリレーション先の記事(投稿した記事)の、さらにリレーション先の、
+        // 記事を投稿したユーザー
+        // 記事にいいねしたユーザー
+        // 記事に付けられたタグ
+        // をEagerロードして発行SQLをへらす
+        ->load(['articles.user', 'articles.likes', 'articles.tags']);
 
         //userモデルでリレーションしたarticlesモデルの（ユーザーの投稿記事を降順にする）created_atを降順にソートして変数に代入
         $articles = $user->articles->sortByDesc('created_at');
@@ -70,7 +76,11 @@ class UserController extends Controller
     //特定のユーザーがフォローしている一覧ページを表示
     public function followings(string $name) {
 
-        $user = User::where('name', $name)->first();
+        $user = User::where('name', $name)->first()
+            //ユーザーモデルのリレーション先のフォロー中ユーザーの、さらにリレーション先の、
+            // フォロワー
+            // をEagerロードしている
+            ->load('followings.followers');
 
         //ユーザーコレクション（ユーザーモデル）のfollowings()メソッドにアクセスし、フォロー中のユーザーモデルをコレクションで取得する
         $followings = $user->followings->sortByDesc('created_at');
@@ -84,7 +94,11 @@ class UserController extends Controller
 
     public function followers(string $name) {
 
-        $user = User::where('name', $name)->first();
+        $user = User::where('name', $name)->first()
+            //ユーザーモデルのリレーション先のフォロワーの、さらにリレーション先の、
+            //フォロワー
+            //をEagerロードする
+            ->load('followers.followers');
 
         $followers = $user->followers->sortByDesc('created_at');
 

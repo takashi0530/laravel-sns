@@ -9,11 +9,11 @@
                 <h1 class="text-center"><a href="/" class="text-dark">memo</a></h1>
                 <div class="card mt-3">     <!-- 要素の基本サイズ：16px   mt-5:要素の基本サイズ16px × 3倍 ＝ 48px -->
                     <div class="card-body text-center">
-                        <h2 class="h3 card-title text-center mt-2">ログイン</h2>
+                        <h2 class="h3 card-title text-center mt-2 fa-google">ログイン</h2>
 
                         <a href="{{ route('login.{provider}', ['provider' => 'google']) }}" class="btn btn-block btn-danger">
 
-                        <i class="favv fa-google mr-1"></i>Googleでログイン</a>
+                        <i class="fab fa-google mr-1"></i>Googleでログイン</a>
 
                         @include('error_card_list')
 

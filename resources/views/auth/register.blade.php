@@ -11,10 +11,14 @@
                     <div class="card-body text-center">
                         <h2 class="h3 card-title text-center mt-2">ユーザー登録</h2>
 
+                        <a href="{{ route('login.{provider}', ['provider' => 'google']) }}" class="btn btn-block btn-danger">
+                            <i class="fab fa-google mr-1"></i>Googleで登録
+                        </a>
+
                         @include('error_card_list')     <!-- 他のテンプレートをincludeしている -->
 
                         <div class="card-text">
-                            {{--ここから--}}
+
                             <form method="POST" action="{{ route('register') }}">   <!-- <form method="POST" action="http://localhost/register">  -->
                                 @csrf   <!-- csrf対策に必要 -->
                                 <div class="md-form">
@@ -36,7 +40,6 @@
                                 </div>
                                 <button class="btn btn-block blue-gradient mt-2 mb-2" type="submit">ユーザー登録</button>
                             </form>
-                            {{--ここまで--}}
 
                             <div class="mt-0">
                                 <a href="{{ route('login') }}" class="card-text">ログインはこちら</a>

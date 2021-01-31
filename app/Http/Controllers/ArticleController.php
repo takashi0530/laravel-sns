@@ -18,7 +18,9 @@ class ArticleController extends Controller {
     public function index() {
 
         //Articleモデルの全データが最新の投稿日時順に並び替えられた上で$articles に代入
-        $articles = Article::all()->sortByDesc('created_at');
+        //発行されるSQL：select * from "articles"
+        $articles = Article::all()->sortByDesc('created_at')
+            ->load(['user', 'likes', 'tags']); //遅延Eagerロード(Lazy Eager Loading)でクエリの発行回数を一回にできる N+1問題解消
 
 
         //ダミーデータ

@@ -31,7 +31,7 @@ class Article extends Model {
             //where()メソッド：第一引数にキー名を指定し、第二引数に値を渡すと条件に一致するコレクション（配列を拡張したもの）を返す。
             //count()メソッド：コレクションの要素数を数えて数値を返す。
             //(bool) : 型キャストのこと。変数の前にカッコで記述しカッコ内に指定した型に変換する。(bool)ならtrueもしくはfalseに変換する
-            ?(bool)$this->likes->where('id', $user->id)->count()
+            ?(bool)$this->likes->where('id', $user->id)->count() //クエリが複数回発行されている！
             :false;
     }
 

@@ -18,6 +18,15 @@ Route::prefix('login')->name('login.')->group(function() {
     Route::get('/{provider}/callback', 'Auth\LoginController@handleProviderCallback')->name('{provider}.callback');
 });
 
+//Googleアカウントが登録されていなかった場合のルーティング
+Route::prefix('register')->name('register.')->group(function() {
+    //Googleのような"Provider(サービスの提供者)"のユーザーを登録する画面を表示するアクションメソッドである
+    Route::get('/{provider}', 'Auth\RegisterController@showProviderUserRegistrationForm')->name('{provider}');
+    //ユーザー名の登録画面でユーザー登録ボタンを押したあとのルーティング
+    Route::post('/{provider}', 'Auth\RegisterController@registerProviderUser')->name('{provider}');
+    
+});
+
 Route::get('/', 'ArticleController@index')->name('articles.index');         //Routeファサードのメソッドに->name()メソッドを繋げるとそのルーティングに名前をつけられる
 Route::resource('/articles', 'ArticleController')->except(['index', 'show'])->middleware('auth');       //②  //erxcept()メソッドを繋げると指定したルーティングを除外できる（③のindexを除外する）   // ④ ->middleware('auth) ：  authミドルウェアはリクエストをコントローラーで処理する前にユーザーがログイン済みであるかどうかをチェックし、ログインしていなければユーザーをログイン画面へリダイレクトする。すでにログイン済みであるならコントローラーの処理が行われる。
 Route::resource('/articles', 'ArticleController')->only(['show']);
